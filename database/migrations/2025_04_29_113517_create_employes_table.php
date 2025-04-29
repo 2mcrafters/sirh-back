@@ -26,6 +26,7 @@ return new class extends Migration
             $table->enum('role', ['Employe', 'Chef_Dep', 'RH']);
             $table->enum('statut', [ 'Present','Absent', 'Congé', 'Malade']);
             $table->enum('typeContrat', [ 'Permanent', 'Temporaire']);
+            $table->string('picture')->nullable();
             $table->foreignId('departement_id')->nullable()->constrained()->nullOnDelete();        
             $table->timestamps();
         });
