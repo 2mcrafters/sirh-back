@@ -32,8 +32,8 @@ class AbsenceRequestController extends Controller
             'dateDebut' => 'required|date',
             'dateFin' => 'required|date|after_or_equal:dateDebut',
             'motif' => 'nullable|string',
-            'statut' => 'required|in:brouillon,en_attente,validé,rejeté',
-            'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', // 1MB max size
+            'statut' => 'required|in:en_attente,validé,rejeté',
+            'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', 
         ];
     
         $data = $request->except('justification');
@@ -100,7 +100,7 @@ class AbsenceRequestController extends Controller
                 'dateDebut' => 'sometimes|date',
                 'dateFin' => 'sometimes|date|after_or_equal:dateDebut',
                 'motif' => 'nullable|string',
-                'statut' => 'sometimes|in:brouillon,en_attente,validé,rejeté',
+                'statut' => 'sometimes|in:en_attente,validé,rejeté',
                 'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', // 1MB max size
             ];
             
