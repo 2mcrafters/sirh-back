@@ -33,10 +33,10 @@ class AbsenceRequestController extends Controller
             'dateFin' => 'required|date|after_or_equal:dateDebut',
             'motif' => 'nullable|string',
             'statut' => 'required|in:brouillon,en_attente,validé,rejeté',
-            'justificationUrl' => 'nullable|string',
+            'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', // 1MB max size
         ];
     
-        $data = $request->all();
+        $data = $request->except('justification');
     
         if (isset($data[0])) {
             foreach ($data as $a) {
@@ -44,6 +44,14 @@ class AbsenceRequestController extends Controller
                 if ($validator->fails()) {
                     return response()->json(['error' => $validator->errors()], 422);
                 }
+                
+                if ($request->hasFile('justification')) {
+                    $file = $request->file('justification');
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('public/justifications', $fileName);
+                    $a['justificationUrl'] = 'storage/justifications/' . $fileName;
+                }
+                
                 AbsenceRequest::create($a);
             }
             return response()->json(['message' => 'Absences ajoutées']);
@@ -52,6 +60,14 @@ class AbsenceRequestController extends Controller
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 422);
             }
+            
+            if ($request->hasFile('justification')) {
+                $file = $request->file('justification');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/justifications', $fileName);
+                $data['justificationUrl'] = 'storage/justifications/' . $fileName;
+            }
+            
             return AbsenceRequest::create($data);
         }
     }
@@ -85,9 +101,24 @@ class AbsenceRequestController extends Controller
                 'dateFin' => 'sometimes|date|after_or_equal:dateDebut',
                 'motif' => 'nullable|string',
                 'statut' => 'sometimes|in:brouillon,en_attente,validé,rejeté',
-                'justificationUrl' => 'nullable|string',
+                'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', // 1MB max size
             ];
-            $validated = validator($updateData, $rules)->validate();
+            
+            $data = $updateData;
+            if ($request->hasFile('justification')) {
+                // Delete old file if exists
+                if ($absence->justificationUrl) {
+                    $oldFilePath = str_replace('storage/', 'public/', $absence->justificationUrl);
+                    \Storage::delete($oldFilePath);
+                }
+                
+                $file = $request->file('justification');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/justifications', $fileName);
+                $data['justificationUrl'] = 'storage/justifications/' . $fileName;
+            }
+            
+            $validated = validator($data, $rules)->validate();
             $absence->update($validated);
         }
         return response()->json(['message' => 'Absences modifiées']);
