@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Employe;
 use Illuminate\Http\Request;
 
+use App\Models\User; 
+
 class EmployeController extends Controller
 {
     /**
@@ -14,6 +16,25 @@ class EmployeController extends Controller
     {
         //
     }
+
+
+
+    public function assignRole(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|string|in:EMPLOYE,CHEF_DEP,RH',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $user->assignRole($request->role);
+
+        return response()->json([
+            'message' => 'Role assigned successfully',
+            'user' => $user,
+            'roles' => $user->getRoleNames(),
+        ]);
+}
 
     /**
      * Show the form for creating a new resource.
