@@ -10,9 +10,8 @@ class DepartementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+    public function index() {
+        return Departement::all();
     }
 
     /**
@@ -26,9 +25,20 @@ class DepartementController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        $data = $request->all();
+        $rules = ['nom' => 'required|string|unique:departements,nom'];
+
+        if (isset($data[0])) {
+            foreach ($data as $d) {
+                validator($d, $rules)->validate();
+                Departement::create($d);
+            }
+            return response()->json(['message' => 'Départements ajoutés']);
+        } else {
+            $validated = validator($data, $rules)->validate();
+            return Departement::create($validated);
+        }
     }
 
     /**
@@ -50,16 +60,22 @@ class DepartementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Departement $departement)
-    {
-        //
+    public function update(Request $request) {
+        foreach ($request->all() as $updateData) {
+            $departement = Departement::findOrFail($updateData['id']);
+            $rules = ['nom' => 'sometimes|string|unique:departements,nom,' . $updateData['id']];
+            $validated = validator($updateData, $rules)->validate();
+            $departement->update($validated);
+        }
+        return response()->json(['message' => 'Départements modifiés']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Departement $departement)
-    {
-        //
+    public function destroy(Request $request) {
+        $ids = $request->input('ids');
+        Departement::whereIn('id', $ids)->delete();
+        return response()->json(['message' => 'Départements supprimés']);
     }
 }

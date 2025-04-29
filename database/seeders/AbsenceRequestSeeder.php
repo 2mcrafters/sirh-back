@@ -20,7 +20,8 @@ class AbsenceRequestSeeder extends Seeder
                 'dateDebut' => '2025-05-10',
                 'dateFin' => '2025-05-15',
                 'motif' => 'Vacances familiales',
-                'statut' => 'accepte',
+
+                'statut' => 'en_attente',
                 'justificationUrl' => 'justificatifs/conge1.pdf',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -31,7 +32,8 @@ class AbsenceRequestSeeder extends Seeder
                 'dateDebut' => '2025-04-20',
                 'dateFin' => '2025-04-22',
                 'motif' => 'Fièvre et fatigue',
-                'statut' => 'accepte',
+
+                'statut' => 'validé',
                 'justificationUrl' => 'justificatifs/maladie2.pdf',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -42,7 +44,8 @@ class AbsenceRequestSeeder extends Seeder
                 'dateDebut' => '2025-04-28',
                 'dateFin' => '2025-04-28',
                 'motif' => 'Rendez-vous administratif',
-                'statut' => 'en_attente',
+
+                'statut' => 'validé',
                 'justificationUrl' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -53,7 +56,7 @@ class AbsenceRequestSeeder extends Seeder
                 'dateDebut' => '2025-05-01',
                 'dateFin' => '2025-05-03',
                 'motif' => 'Grippe saisonnière',
-                'statut' => 'refuse',
+                'statut' => 'rejeté',
                 'justificationUrl' => 'justificatifs/maladie4.pdf',
                 'created_at' => now(),
                 'updated_at' => now(),
