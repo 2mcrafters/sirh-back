@@ -76,5 +76,22 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    public function assignRole(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|string|in:EMPLOYE,CHEF_DEP,RH',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $user->assignRole($request->role);
+
+        return response()->json([
+            'message' => 'Role assigned successfully',
+            'user' => $user,
+            'roles' => $user->getRoleNames(),
+        ]);
+    }
 }
 
