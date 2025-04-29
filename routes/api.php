@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmployeController;
+
+use App\Http\Middleware\RoleMiddleware;
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -24,6 +28,10 @@ Route::middleware(['auth:sanctum', 'role:RH'])->get('/user_permission', function
     ]);
 });
 
+
+
+
+Route::middleware(['auth:sanctum', 'role:RH'])->post('/assign-role', [EmployeController::class, 'assignRole']);
 
 
 
