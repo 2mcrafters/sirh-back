@@ -15,7 +15,7 @@ class AuthController extends Controller
             'name'     => 'required|string',
             'email'    => 'required|email|unique:users',
             'password' => 'required|confirmed|min:6',
-            'role' => 'required|string|in:EMPLOYE,CHEF_DEP,RH',
+            // 'role' => 'required|string|in:EMPLOYE,CHEF_DEP,RH',
         ]);
 
         $user = User::create([
@@ -65,6 +65,9 @@ class AuthController extends Controller
             'roles' => $user->getRoleNames(),
         ]);
     }
+
+
+    
 
     public function logout(Request $request)
     {
