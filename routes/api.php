@@ -37,6 +37,8 @@ Route::middleware(['auth:sanctum', 'role:RH'])->post('/assign-role', [EmployeCon
 
 
 
+
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
