@@ -48,7 +48,7 @@ class UserController extends Controller
             'date_naissance' => 'required|date',
             'statut' => 'required|in:Présent,Absent,Congé,Maladie',
             'departement_id' => 'required|exists:departements,id',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
         $data = $request->all();
@@ -57,11 +57,11 @@ class UserController extends Controller
                 $validated = $request->validate($rules);
                 
                 // Handle profile picture upload if present
-                if (isset($record['profile_picture']) && $record['profile_picture']->isValid()) {
-                    $profilePicture = $record['profile_picture'];
+                if (isset($record['picture']) && $record['picture']->isValid()) {
+                    $profilePicture = $record['picture'];
                     $fileName = time() . '_' . $profilePicture->getClientOriginalName();
-                    $profilePicture->storeAs('profile_picture', $fileName, 'public');
-                    $validated['profile_picture'] = $fileName;
+                    $profilePicture->storeAs('picture', $fileName, 'public');
+                    $validated['picture'] = $fileName;
                 }
                 
                 // Hash password
@@ -79,11 +79,11 @@ class UserController extends Controller
             $validated = $request->validate($rules);
             
             // Handle profile picture upload if present
-            if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
-                $profilePicture = $request->file('profile_picture');
+            if ($request->hasFile('picture') && $request->file('picture')->isValid()) {
+                $profilePicture = $request->file('picture');
                 $fileName = time() . '_' . $profilePicture->getClientOriginalName();
-                $profilePicture->storeAs('profile_picture', $fileName, 'public');
-                $validated['profile_picture'] = $fileName;
+                $profilePicture->storeAs('picture', $fileName, 'public');
+                $validated['picture'] = $fileName;
             }
             
             // Hash password
