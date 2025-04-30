@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Imports\EmployesImport;
-use App\Exports\EmployesExport;
+use App\Imports\UsersImport;
+use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class EmployeExcelController extends Controller
+class UserExcelController extends Controller
 {
     public function import(Request $request)
     {
@@ -16,13 +16,13 @@ class EmployeExcelController extends Controller
         ]);
 
         
-        Excel::import(new EmployesImport, $request->file('file'));
+        Excel::import(new UsersImport, $request->file('file'));
 
         return back()->with('success', 'Les employés ont été importés avec succès.');
     }
 
-    public function exportEmployes()
+    public function exportUsers()
     {
-        return Excel::download(new EmployesExport, 'employes.xlsx');
+        return Excel::download(new UsersExport, 'employes.xlsx');
     }
 }

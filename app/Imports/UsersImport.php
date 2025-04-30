@@ -2,13 +2,13 @@
 
 namespace App\Imports;
 
-use App\Models\Employe;
+use App\Models\User;
 
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\Departement;
 
-class EmployesImport implements ToModel,WithHeadingRow
+class UsersImport implements ToModel,WithHeadingRow
 {
     /**
     * @param array $row
@@ -26,13 +26,15 @@ class EmployesImport implements ToModel,WithHeadingRow
         ]);
 
         
-        return new Employe([
+        return new User([
             'cin' => $row["cin"],                     
             'rib' => $row['rib'],             
             'situationFamiliale' => $row['situation_familiale'],
             'nbEnfants' => $row['nombre_enfants'],
             'adresse' => $row['adresse'],
-            'nom' => $row['nom'],                    
+            'name' => $row['nom'],   
+            'password' => bcrypt($row['mot_de_passe']),
+            'picture' => $row['photo_profil'],                 
             'prenom' => $row['prenom'],               
             'date_naissance' => $row['date_naissance'], 
             'tel' => $row['telephone'],             

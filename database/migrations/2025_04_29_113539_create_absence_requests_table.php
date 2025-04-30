@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('absence_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employe_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('type', ['Congé', 'maladie', 'autre']);
             $table->date('dateDebut');
             $table->date('dateFin');
             $table->text('motif')->nullable();
-            $table->enum('statut', ['en_attente', 'accepte', 'refuse'])->default('en_attente');
+            $table->enum('statut', ['en_attente', 'validé', 'rejeté'])->default('en_attente');
             $table->string('justificationUrl')->nullable();
             $table->timestamps();
         });

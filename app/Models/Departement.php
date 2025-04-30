@@ -8,7 +8,7 @@ class Departement extends Model
 {
     protected $fillable = ['nom'];
 
-    public function employes() {
-        return $this->hasMany(Employe::class);
+    public function users() {
+        return $this->hasMany(User::class);
     }
 }

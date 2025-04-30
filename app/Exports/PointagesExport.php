@@ -13,11 +13,11 @@ class PointagesExport implements FromCollection,WithHeadings
     */
     public function collection()
     {
-        return Pointage::with('employe')
+        return Pointage::with('user')
             ->get()
             ->map(function ($item) {
-                $nom = $item->employe->nom ?? '';
-                $prenom = $item->employe->prenom ?? '';
+                $nom = $item->user->name ?? '';
+                $prenom = $item->user->prenom ?? '';
                 $nomComplet = trim("$prenom $nom");
                 return [
                    'Nom Complet Employé' => $nomComplet ?: 'N/A',

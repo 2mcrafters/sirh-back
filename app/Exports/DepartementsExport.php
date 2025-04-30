@@ -13,9 +13,9 @@ class DepartementsExport implements FromCollection,WithHeadings
     */
     public function collection()
     {
-        return Departement::with('employes')->get()->map(function ($departement) {
-            $nomsEmployes = $departement->employes->map(function ($employe) {
-                return $employe->nom . ' ' . $employe->prenom;
+        return Departement::with('users')->get()->map(function ($departement) {
+            $nomsEmployes = $departement->users->map(function ($user) {
+                return $user->name . ' ' . $user->prenom;
             })->implode(', ');
 
             return [
