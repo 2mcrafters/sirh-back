@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\AbsenceRequestController;
 use App\Http\Controllers\PointageController;
-use App\Http\Controllers\EmployeController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
 
 
@@ -37,10 +37,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/employes', [EmployeController::class, 'index']);
-Route::post('/employes', [EmployeController::class, 'store']);
-Route::put('/employes', [EmployeController::class, 'update']);
-Route::delete('/employes', [EmployeController::class, 'destroy']); 
+Route::get('/employes', [UserController::class, 'index']);
+Route::post('/employes', [UserController::class, 'store']);
+Route::put('/employes', [UserController::class, 'update']);
+Route::delete('/employes', [UserController::class, 'destroy']); 
 
 
 Route::get('/departements', [DepartementController::class, 'index']);
