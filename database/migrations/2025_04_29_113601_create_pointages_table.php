@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pointages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employe_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->time('heureEntree')->nullable();
             $table->time('heureSortie')->nullable();

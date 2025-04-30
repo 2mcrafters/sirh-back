@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employe;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class EmployeController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index() {
-        $employes = Employe::all();
-        foreach ($employes as $employe) {
-            $employe->profile_picture_url = $employe->profile_picture_url;
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->profile_picture_url = $user->profile_picture_url;
         }
-        return $employes;
+        return $users;
     }
 
 
@@ -41,7 +41,7 @@ class EmployeController extends Controller
             'nom' => 'required|string|max:50',
             'prenom' => 'required|string|max:50',
             'tel' => 'required|string|max:20',
-            'email' => 'required|email|unique:employes,email',
+            'email' => 'required|email|unique:users,email',
             'role' => 'required|in:EMPLOYE,CHEF_DEP,RH',
             'type_contrat' => 'required|in:Permanent,Temporaire',
             'date_naissance' => 'required|date',
@@ -49,7 +49,9 @@ class EmployeController extends Controller
             'departement_id' => 'required|exists:departements,id',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
-
+        if ($request->role) {
+            $user->assignRole($request->role);
+        }
         $data = $request->all();
         if (isset($data[0])) {
             foreach ($data as $record) {
@@ -63,7 +65,7 @@ class EmployeController extends Controller
                     $record['profile_picture'] = $fileName;
                 }
                 
-                Employe::create($record);
+                User::create($record);
             }
             return response()->json(['message' => 'Employés ajoutés']);
         } else {
@@ -77,22 +79,22 @@ class EmployeController extends Controller
                 $validated['profile_picture'] = $fileName;
             }
             
-            return Employe::create($validated);
+            return User::create($validated);
         }
     }
     /**
      * Display the specified resource.
      */
-    public function show(Employe $employe)
+    public function show(User $user)
     {
-        $employe->profile_picture_url = $employe->profile_picture_url;
-        return $employe;
+        $user->profile_picture_url = $user->profile_picture_url;
+        return $user;
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employe $employe)
+    public function edit(User $user)
     {
         //
     }
@@ -102,7 +104,7 @@ class EmployeController extends Controller
      */
     public function update(Request $request) {
         foreach ($request->all() as $updateData) {
-            $employe = Employe::findOrFail($updateData['id']);
+            $user = User::findOrFail($updateData['id']);
             $rules = [
                 'cin' => 'sometimes|string|max:20',
                 'rib' => 'sometimes|string|max:32',
@@ -112,7 +114,7 @@ class EmployeController extends Controller
                 'nom' => 'sometimes|string|max:50',
                 'prenom' => 'sometimes|string|max:50',
                 'tel' => 'sometimes|string|max:20',
-                'email' => 'sometimes|email|unique:employes,email,' . $updateData['id'],
+                'email' => 'sometimes|email|unique:users,email,' . $updateData['id'],
                 'role' => 'sometimes|in:EMPLOYE,CHEF_DEP,RH',
                 'type_contrat' => 'sometimes|in:Permanent,Temporaire',
                 'date_naissance' => 'sometimes|date',
@@ -125,8 +127,8 @@ class EmployeController extends Controller
             // Handle profile picture update if present
             if (isset($updateData['profile_picture']) && $updateData['profile_picture']->isValid()) {
                 // Delete old profile picture if exists
-                if ($employe->profile_picture) {
-                    Storage::disk('public')->delete('profile_picture/' . $employe->profile_picture);
+                if ($user->profile_picture) {
+                    Storage::disk('public')->delete('profile_picture/' . $user->profile_picture);
                 }
                 
                 $profilePicture = $updateData['profile_picture'];
@@ -135,7 +137,7 @@ class EmployeController extends Controller
                 $validated['profile_picture'] = $fileName;
             }
             
-            $employe->update($validated);
+            $user->update($validated);
         }
         return response()->json(['message' => 'Employés modifiés']);
     }
@@ -145,7 +147,7 @@ class EmployeController extends Controller
      */
     public function destroy(Request $request) {
         $ids = $request->input('ids');
-        Employe::whereIn('id', $ids)->delete();
+        User::whereIn('id', $ids)->delete();
         return response()->json(['message' => 'Employés supprimés']);
     }
 }

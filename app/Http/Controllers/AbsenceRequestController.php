@@ -29,7 +29,7 @@ class AbsenceRequestController extends Controller
 
     public function store(Request $request) {
         $rules = [
-            'employe_id' => 'required|exists:employes,id',
+            'user_id' => 'required|exists:users,id',
             'type' => 'required|in:Congé,maladie,autre',
             'dateDebut' => 'required|date',
             'dateFin' => 'required|date|after_or_equal:dateDebut',
