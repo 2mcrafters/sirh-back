@@ -12,6 +12,7 @@ use App\Http\Controllers\AbsenceRequestController;
 use App\Http\Controllers\PointageController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\StatistiquesController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -53,6 +54,11 @@ Route::get('/export-employes', [UserExcelController::class, 'exportUsers']);
 Route::get('/export-absence-requests', [AbsenceRequestExcelController::class, 'exportAbsences']);
 Route::get('/export-pointages', [PointageExcelController::class, 'exportPointages']);
 Route::get('/export-departements', [DepartementExcelController::class, 'exportDepartements']);
+
+// statistiques
+Route::get('/statistiques/presence', [StatistiquesController::class, 'statistiquesPresence']);
+
+
 
 Route::get('/employes', [UserController::class, 'index']);
 Route::post('/employes', [UserController::class, 'store']);
