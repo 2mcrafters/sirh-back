@@ -35,7 +35,7 @@ class AbsenceRequestController extends Controller
             'dateFin' => 'required|date|after_or_equal:dateDebut',
             'motif' => 'nullable|string',
             'statut' => 'required|in:en_attente,validé,rejeté',
-            'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', 
+            'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:2048', 
         ];
     
         $data = $request->except('justification');
@@ -120,7 +120,7 @@ class AbsenceRequestController extends Controller
                 'dateFin' => 'sometimes|date|after_or_equal:dateDebut',
                 'motif' => 'nullable|string',
                 'statut' => 'sometimes|in:en_attente,validé,rejeté',
-                'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024',
+                'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:2048',
             ];
 
             $validator = validator($updateData, $rules);
@@ -132,17 +132,21 @@ class AbsenceRequestController extends Controller
 
             // If file uploaded with this request
             if ($request->hasFile('justification')) {
-                // Delete old file if exists
+                // Delete the old file if it exists
                 if ($absence->justification) {
-                    $oldFilePath = str_replace('storage/', 'public/', $absence->justification);
-                    \Storage::delete($oldFilePath);
+                    $oldPath = str_replace('storage/', 'public/', $absence->justification);
+                    \Storage::delete($oldPath);
                 }
-                
+            
                 $file = $request->file('justification');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/justifications', $fileName);
                 $validated['justification'] = 'storage/justifications/' . $fileName;
+            } else {
+                // Preserve the existing file URL if no new file was sent
+                $validated['justification'] = $absence->justification;
             }
+            
 
             $absence->update($validated);
         }

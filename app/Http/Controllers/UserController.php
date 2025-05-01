@@ -142,7 +142,7 @@ class UserController extends Controller
                 'role' => 'sometimes|in:EMPLOYE,CHEF_DEP,RH',
                 'typeContrat' => 'sometimes|in:Permanent,Temporaire',
                 'date_naissance' => 'sometimes|date',
-                'statut' => 'sometimes|in:Présent,Absent,Congé,Maladie',
+                'statut' => 'sometimes|in:Actif,Inactif,Congé,Malade',
                 'departement_id' => 'sometimes|exists:departements,id',
                 'picture' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
             ];
