@@ -24,7 +24,7 @@ class User extends Authenticatable
         'cin', 'rib', 'situationFamiliale', 'nbEnfants', 'adresse',
         'name',"password", 'prenom', 'date_naissance', 'tel', 'email', 'role',
 
-        'statut', 'typeContrat', 'departement_id', 'profile_picture'
+        'statut', 'typeContrat', 'departement_id', 'picture'
     ];
 
 
