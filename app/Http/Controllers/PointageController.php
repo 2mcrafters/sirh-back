@@ -29,8 +29,8 @@ class PointageController extends Controller
         $rules = [
             'user_id' => 'required|exists:users,id',
             'date' => 'required|date',
-            'heureEntree' => 'nullable|date_format:H:i',
-            'heureSortie' => 'nullable|date_format:H:i',
+            'heureEntree' => 'nullable|date_format:H:i|nullable',
+            'heureSortie' => 'nullable|date_format:H:i|nullable',
             'statutJour' => 'required|in:present,absent,retard',
             'overtimeHours' => 'nullable|numeric',
         ];
@@ -95,8 +95,8 @@ class PointageController extends Controller
         foreach ($request->all() as $updateData) {
             $pointage = Pointage::findOrFail($updateData['id']);
             $rules = [
-                'heureEntree' => 'sometimes|date_format:H:i',
-                'heureSortie' => 'sometimes|date_format:H:i',
+                'heureEntree' => 'sometimes|date_format:H:i|nullable',
+                'heureSortie' => 'sometimes|date_format:H:i|nullable',
                 'statutJour' => 'sometimes|in:present,absent,retard',
                 'overtimeHours' => 'nullable|numeric',
             ];

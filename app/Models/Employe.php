@@ -12,7 +12,7 @@ class Employe extends Model
         'cin', 'rib', 'situationFamiliale', 'nbEnfants', 'adresse',
         'nom', 'prenom', 'date_naissance', 'tel', 'email', 'role',
 
-        'statut', 'typeContrat', 'departement_id', 'profile_picture'
+        'statut', 'typeContrat', 'departement_id', 'picture'
     ];
     
     /**
