@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -31,14 +33,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request) {
         $rules = [
+            'name' => 'required|string|max:100',
             'cin' => 'required|string|max:20',
             'rib' => 'required|string|max:32',
             'situationFamiliale' => 'required|in:Célibataire,Marié,Divorcé',
             'nbEnfants' => 'required|integer|min:0',
             'adresse' => 'required|string|max:255',
-            'name' => 'required|string|max:50',
             'prenom' => 'required|string|max:50',
             'tel' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email',
@@ -48,57 +51,60 @@ class UserController extends Controller
             'date_naissance' => 'required|date',
             'statut' => 'required|in:Présent,Absent,Congé,Maladie',
             'departement_id' => 'required|exists:departements,id',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
-
+    
         $data = $request->all();
+    
         if (isset($data[0])) {
             foreach ($data as $record) {
-                $validated = $request->validate($rules);
-                
-                // Handle profile picture upload if present
-                if (isset($record['profile_picture']) && $record['profile_picture']->isValid()) {
-                    $profilePicture = $record['profile_picture'];
-                    $fileName = time() . '_' . $profilePicture->getClientOriginalName();
-                    $profilePicture->storeAs('profile_picture', $fileName, 'public');
-                    $validated['profile_picture'] = $fileName;
+                $validator = Validator::make($record, $rules);
+    
+                if ($validator->fails()) {
+                    return response()->json(['error' => $validator->errors()], 422);
                 }
-                
-                // Hash password
+    
+                $validated = $validator->validated();
+    
+                // Handle picture as base64 or skip it
+                if (!empty($record['picture'])) {
+                    $image = $record['picture'];
+                    $fileName = time() . '_' . uniqid() . '.jpg';
+                    \Storage::disk('public')->put("profile_picture/$fileName", base64_decode($image));
+                    $validated['picture'] = $fileName;
+                }
+    
                 $validated['password'] = Hash::make($validated['password']);
-                
                 $user = User::create($validated);
-                
-                // Assign role after user creation
+    
                 if (isset($validated['role'])) {
                     $user->assignRole($validated['role']);
                 }
             }
+    
             return response()->json(['message' => 'Employés ajoutés']);
-        } else {
-            $validated = $request->validate($rules);
-            
-            // Handle profile picture upload if present
-            if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
-                $profilePicture = $request->file('profile_picture');
-                $fileName = time() . '_' . $profilePicture->getClientOriginalName();
-                $profilePicture->storeAs('profile_picture', $fileName, 'public');
-                $validated['profile_picture'] = $fileName;
-            }
-            
-            // Hash password
-            $validated['password'] = Hash::make($validated['password']);
-            
-            $user = User::create($validated);
-            
-            // Assign role after user creation
-            if (isset($validated['role'])) {
-                $user->assignRole($validated['role']);
-            }
-            
-            return $user;
         }
+    
+        // Single user
+        $validated = $request->validate($rules);
+    
+        if ($request->hasFile('picture') && $request->file('picture')->isValid()) {
+            $profilePicture = $request->file('picture');
+            $fileName = time() . '_' . $profilePicture->getClientOriginalName();
+            $profilePicture->storeAs('profile_picture', $fileName, 'public');
+            $validated['picture'] = $fileName;
+        }
+    
+        $validated['password'] = Hash::make($validated['password']);
+        $user = User::create($validated);
+    
+        if (isset($validated['role'])) {
+            $user->assignRole($validated['role']);
+        }
+    
+        return $user;
     }
+    
 
     /**
      * Display the specified resource.
@@ -129,7 +135,6 @@ class UserController extends Controller
                 'situationFamiliale' => 'sometimes|in:Célibataire,Marié,Divorcé',
                 'nbEnfants' => 'sometimes|integer|min:0',
                 'adresse' => 'sometimes|string|max:255',
-                'name' => 'sometimes|string|max:50',
                 'prenom' => 'sometimes|string|max:50',
                 'tel' => 'sometimes|string|max:20',
                 'email' => 'sometimes|email|unique:users,email,' . $updateData['id'],
@@ -139,22 +144,22 @@ class UserController extends Controller
                 'date_naissance' => 'sometimes|date',
                 'statut' => 'sometimes|in:Présent,Absent,Congé,Maladie',
                 'departement_id' => 'sometimes|exists:departements,id',
-                'profile_picture' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'picture' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
             ];
             
             $validated = $request->validate($rules);
             
             // Handle profile picture update if present
-            if (isset($updateData['profile_picture']) && $updateData['profile_picture']->isValid()) {
+            if (isset($updateData['picture']) && $updateData['picture']->isValid()) {
                 // Delete old profile picture if exists
-                if ($user->profile_picture) {
-                    Storage::disk('public')->delete('profile_picture/' . $user->profile_picture);
+                if ($user->picture) {
+                    Storage::disk('public')->delete('profile_picture/' . $user->picture);
                 }
                 
-                $profilePicture = $updateData['profile_picture'];
+                $profilePicture = $updateData['picture'];
                 $fileName = time() . '_' . $profilePicture->getClientOriginalName();
                 $profilePicture->storeAs('profile_picture', $fileName, 'public');
-                $validated['profile_picture'] = $fileName;
+                $validated['picture'] = $fileName;
             }
             
             // Hash password if provided
