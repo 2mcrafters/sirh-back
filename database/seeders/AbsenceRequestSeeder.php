@@ -25,7 +25,7 @@ class AbsenceRequestSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'user_id' => 2,
+                'user_id' => 62,
                 'type' => 'Congé',
                 'dateDebut' => '2025-06-01',
                 'dateFin' => '2025-06-05',
@@ -102,7 +102,7 @@ class AbsenceRequestSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'user_id' => 9,
+                'user_id' => 60,
                 'type' => 'Maladie',
                 'dateDebut' => '2025-05-18',
                 'dateFin' => '2025-05-19',
@@ -113,7 +113,7 @@ class AbsenceRequestSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'user_id' => 10,
+                'user_id' => 59,
                 'type' => 'Congé',
                 'dateDebut' => '2025-06-20',
                 'dateFin' => '2025-06-25',

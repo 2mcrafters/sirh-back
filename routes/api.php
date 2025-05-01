@@ -21,6 +21,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+Route::get('/statistiques/presence', [StatistiquesController::class, 'statistiquesPresence']);
+
 });
 
 Route::middleware(['auth:sanctum', 'role:RH'])->group(function () {
@@ -64,8 +66,12 @@ Route::get('/export-pointages', [PointageExcelController::class, 'exportPointage
 Route::get('/export-departements', [DepartementExcelController::class, 'exportDepartements']);
 
 // statistiques
-Route::get('/statistiques/presence', [StatistiquesController::class, 'statistiquesPresence']);
 
+Route::middleware('auth:sanctum')->get('/test-token', function (Request $request) {
+    return response()->json([
+        'user' => $request->user()
+    ]);
+});
 
 
 Route::get('/employes', [UserController::class, 'index']);
@@ -74,7 +80,8 @@ Route::put('/employes', [UserController::class, 'update']);
 Route::delete('/employes', [UserController::class, 'destroy']); 
 
 
-Route::get('/departements', [DepartementController::class, 'index']);
+
+Route::middleware('auth:sanctum')->get('/departements', [DepartementController::class, 'index']);
 Route::post('/departements', [DepartementController::class, 'store']);
 Route::put('/departements', [DepartementController::class, 'update']);
 Route::delete('/departements', [DepartementController::class, 'destroy']);
