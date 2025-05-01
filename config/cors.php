@@ -21,4 +21,6 @@ return [
     // Doit être true pour permettre withCredentials: true
     'supports_credentials' => true,
 
+
 ];
+

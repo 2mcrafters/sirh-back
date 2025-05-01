@@ -8,7 +8,7 @@ class Pointage extends Model
 {
     protected $fillable = ['employe_id', 'date', 'heureEntree', 'heureSortie', 'statutJour', 'overtimeHours'];
 
-    public function employe() {
-        return $this->belongsTo(Employe::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }

@@ -37,7 +37,7 @@ class PointageSeeder extends Seeder
                 }
 
                 Pointage::create([
-                    'employe_id' => $employeId,
+                    'user_id' => $employeId,
                     'date' => $date,
                     'heureEntree' => $entree,
                     'heureSortie' => $sortie,

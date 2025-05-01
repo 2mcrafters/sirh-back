@@ -16,18 +16,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
             DepartementSeeder::class,
-            EmployeSeeder::class,
+            UserSeeder::class,
             AbsenceRequestSeeder::class,
             PointageSeeder::class,
         ]);
 
-        // User::factory(10)->create();
-
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-        
 }
 }
