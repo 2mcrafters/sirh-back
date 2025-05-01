@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
 
 class UserController extends Controller
 {
@@ -76,7 +78,7 @@ class UserController extends Controller
             'role' => 'required|in:EMPLOYE,CHEF_DEP,RH',
             'typeContrat' => 'required|in:Permanent,Temporaire',
             'date_naissance' => 'required|date',
-            'statut' => 'required|in:Présent,Absent,Congé,Maladie',
+            'statut' => 'required|in:Actif,Inactif,Congé,Maladie',
             'departement_id' => 'required|exists:departements,id',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
@@ -153,15 +155,17 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request) {
+   public function update(Request $request) {
         foreach ($request->all() as $updateData) {
             $user = User::findOrFail($updateData['id']);
+            
             $rules = [
                 'cin' => 'sometimes|string|max:20',
                 'rib' => 'sometimes|string|max:32',
                 'situationFamiliale' => 'sometimes|in:Célibataire,Marié,Divorcé',
                 'nbEnfants' => 'sometimes|integer|min:0',
                 'adresse' => 'sometimes|string|max:255',
+                'name' => 'sometimes|string|max:50',
                 'prenom' => 'sometimes|string|max:50',
                 'tel' => 'sometimes|string|max:20',
                 'email' => 'sometimes|email|unique:users,email,' . $updateData['id'],
@@ -169,23 +173,30 @@ class UserController extends Controller
                 'role' => 'sometimes|in:EMPLOYE,CHEF_DEP,RH',
                 'typeContrat' => 'sometimes|in:Permanent,Temporaire',
                 'date_naissance' => 'sometimes|date',
-                'statut' => 'sometimes|in:Présent,Absent,Congé,Maladie',
+                'statut' => 'sometimes|in:Actif,Inactif,Congé,Malade',
                 'departement_id' => 'sometimes|exists:departements,id',
                 'picture' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
             ];
             
-            $validated = $request->validate($rules);
+            $validator = Validator::make($updateData, $rules);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 422);
+            }
+            
+            $validated = $validator->validated();
             
             // Handle profile picture update if present
-            if (isset($updateData['picture']) && $updateData['picture']->isValid()) {
+            if (isset($updateData['picture']) && is_string($updateData['picture'])) {
+                // Handle base64 image
+                $image = $updateData['picture'];
+                $fileName = time() . '_' . uniqid() . '.jpg';
+                Storage::disk('public')->put("profile_picture/$fileName", base64_decode($image));
+                
                 // Delete old profile picture if exists
                 if ($user->picture) {
                     Storage::disk('public')->delete('profile_picture/' . $user->picture);
                 }
                 
-                $profilePicture = $updateData['picture'];
-                $fileName = time() . '_' . $profilePicture->getClientOriginalName();
-                $profilePicture->storeAs('profile_picture', $fileName, 'public');
                 $validated['picture'] = $fileName;
             }
             
@@ -201,6 +212,7 @@ class UserController extends Controller
                 $user->syncRoles([$validated['role']]);
             }
         }
+        
         return response()->json(['message' => 'Employés modifiés']);
     }
 

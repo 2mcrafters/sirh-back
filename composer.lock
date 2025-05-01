@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48bc4435f6900053bbf615b81ffb2ffb",
+    "content-hash": "b4a4a5c2b074a51c070d810c77e27b8d",
+
     "packages": [
         {
             "name": "brick/math",
@@ -136,6 +137,7 @@
             "time": "2024-02-09T16:56:22+00:00"
         },
         {
+
             "name": "composer/pcre",
             "version": "3.3.2",
             "source": {
@@ -671,6 +673,7 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
+
             "name": "ezyang/htmlpurifier",
             "version": "v4.18.0",
             "source": {
@@ -1277,16 +1280,17 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.11.0",
+            "version": "v12.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "050b2dfeaf6fff9e08e84b355822636492fb45f4"
+                "reference": "bd0d62bd9c5196728e428cd695d89ec8640daac1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/050b2dfeaf6fff9e08e84b355822636492fb45f4",
-                "reference": "050b2dfeaf6fff9e08e84b355822636492fb45f4",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/bd0d62bd9c5196728e428cd695d89ec8640daac1",
+                "reference": "bd0d62bd9c5196728e428cd695d89ec8640daac1",
+
                 "shasum": ""
             },
             "require": {
@@ -1488,7 +1492,8 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-04-29T20:18:16+00:00"
+            "time": "2025-04-30T13:48:39+00:00"
+
         },
         {
             "name": "laravel/prompts",
@@ -2292,6 +2297,7 @@
             "time": "2024-12-08T08:18:47+00:00"
         },
         {
+
             "name": "maatwebsite/excel",
             "version": "3.1.64",
             "source": {
@@ -3060,6 +3066,7 @@
             "time": "2024-11-21T10:39:51+00:00"
         },
         {
+
             "name": "phpoffice/phpspreadsheet",
             "version": "1.29.10",
             "source": {

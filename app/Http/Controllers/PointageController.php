@@ -49,7 +49,7 @@ class PointageController extends Controller
      */
     public function store(Request $request) {
         $rules = [
-            'employe_id' => 'required|exists:employes,id',
+            'user_id' => 'required|exists:users,id',
             'date' => 'required|date',
             'heureEntree' => 'nullable|date_format:H:i',
             'heureSortie' => 'nullable|date_format:H:i',
@@ -61,7 +61,7 @@ class PointageController extends Controller
         if (isset($data[0])) {
             foreach ($data as $p) {
                 // Check for existing pointage on the same day
-                $existingPointage = Pointage::where('employe_id', $p['employe_id'])
+                $existingPointage = Pointage::where('user_id', $p['user_id'])
                     ->whereDate('date', $p['date'])
                     ->first();
 
@@ -78,7 +78,7 @@ class PointageController extends Controller
             return response()->json(['message' => 'Pointages ajoutés']);
         } else {
             // Check for existing pointage on the same day
-            $existingPointage = Pointage::where('employe_id', $data['employe_id'])
+            $existingPointage = Pointage::where('user_id', $data['user_id'])
                 ->whereDate('date', $data['date'])
                 ->first();
 
