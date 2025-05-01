@@ -11,9 +11,34 @@ class AbsenceRequestController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index() {
-        return AbsenceRequest::all();
+    // public function index() {
+    //     return AbsenceRequest::all();
+    // }
+
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        if ($user->role === 'RH') {
+            $absences = AbsenceRequest::all();
+        } elseif ($user->role === 'CHEF_DEP') {
+           
+            $departementId = $user->departement_id;  
+            $absences = AbsenceRequest::whereHas('user', function ($query) use ($departementId) {
+                $query->where('departement_id', $departementId);
+            })->get();
+        } else {
+           
+            $absences = $user->absenceRequests;
+        }
+
+       
+        return response()->json([
+            'user' => $user,
+            'absences' => $absences
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
