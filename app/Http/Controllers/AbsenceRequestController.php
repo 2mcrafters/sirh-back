@@ -12,7 +12,7 @@ class AbsenceRequestController extends Controller
      */
 
     public function index() {
-        return AbsenceRequest::all();
+        return AbsenceRequest::with(['user.departement'])->get();
     }
 
     /**
@@ -51,7 +51,12 @@ class AbsenceRequestController extends Controller
                     $file = $request->file('justification');
                     $fileName = time() . '_' . $file->getClientOriginalName();
                     $file->storeAs('public/justifications', $fileName);
-                    $a['justificationUrl'] = 'storage/justifications/' . $fileName;
+                    $a['justification'] = 'storage/justifications/' . $fileName;
+                }
+                
+                // Ensure user_id is included
+                if (!isset($a['user_id'])) {
+                    return response()->json(['error' => 'user_id is required'], 422);
                 }
                 
                 AbsenceRequest::create($a);
@@ -67,7 +72,12 @@ class AbsenceRequestController extends Controller
                 $file = $request->file('justification');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/justifications', $fileName);
-                $data['justificationUrl'] = 'storage/justifications/' . $fileName;
+                $data['justification'] = 'storage/justifications/' . $fileName;
+            }
+            
+            // Ensure user_id is included
+            if (!isset($data['user_id'])) {
+                return response()->json(['error' => 'user_id is required'], 422);
             }
             
             return AbsenceRequest::create($data);
@@ -94,35 +104,49 @@ class AbsenceRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request) {
-        foreach ($request->all() as $updateData) {
+    public function update(Request $request)
+    {
+        // Handle file + JSON case
+        $inputData = $request->has('data')
+            ? json_decode($request->input('data'), true)
+            : $request->all();
+
+        foreach ($inputData as $updateData) {
             $absence = AbsenceRequest::findOrFail($updateData['id']);
+
             $rules = [
-                'type' => 'sometimes|in:Congé,Maladie,Urgence',
+                'type' => 'sometimes|in:Congé,maladie,autre',
                 'dateDebut' => 'sometimes|date',
                 'dateFin' => 'sometimes|date|after_or_equal:dateDebut',
                 'motif' => 'nullable|string',
                 'statut' => 'sometimes|in:en_attente,validé,rejeté',
-                'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024', // 1MB max size
+                'justification' => 'nullable|file|mimes:jpeg,png,pdf|max:1024',
             ];
-            
-            $data = $updateData;
+
+            $validator = validator($updateData, $rules);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 422);
+            }
+
+            $validated = $validator->validated();
+
+            // If file uploaded with this request
             if ($request->hasFile('justification')) {
                 // Delete old file if exists
-                if ($absence->justificationUrl) {
-                    $oldFilePath = str_replace('storage/', 'public/', $absence->justificationUrl);
+                if ($absence->justification) {
+                    $oldFilePath = str_replace('storage/', 'public/', $absence->justification);
                     \Storage::delete($oldFilePath);
                 }
                 
                 $file = $request->file('justification');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/justifications', $fileName);
-                $data['justificationUrl'] = 'storage/justifications/' . $fileName;
+                $validated['justification'] = 'storage/justifications/' . $fileName;
             }
-            
-            $validated = validator($data, $rules)->validate();
+
             $absence->update($validated);
         }
+
         return response()->json(['message' => 'Absences modifiées']);
     }
 

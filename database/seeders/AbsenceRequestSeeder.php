@@ -21,7 +21,7 @@ class AbsenceRequestSeeder extends Seeder
                 'dateFin' => '2025-05-15',
                 'motif' => 'Vacances familiales',
                 'statut' => 'en_attente',
-                'justificationUrl' => 'justificatifs/conge1.pdf',
+                'justification' => 'justificatifs/conge1.pdf',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

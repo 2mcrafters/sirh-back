@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('dateFin');
             $table->text('motif')->nullable();
             $table->enum('statut', ['en_attente', 'validé', 'rejeté'])->default('en_attente');
-            $table->string('justificationUrl')->nullable();
+            $table->string('justification')->nullable();
             $table->timestamps();
         });
     }
