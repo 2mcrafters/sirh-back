@@ -10,9 +10,31 @@ class PointageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return Pointage::all();
+    // public function index() {
+    //     return Pointage::all();
+    // }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->role === 'EMPLOYE') {
+            $pointages = $user->pointages;  
+        } elseif ($user->role === 'CHEF_DEP') {
+            $departementId = $user->departement_id;  
+            $pointages = Pointage::whereHas('user', function ($query) use ($departementId) {
+                $query->where('departement_id', $departementId);
+            })->get();  
+        } elseif ($user->role === 'RH') {
+            $pointages = Pointage::all();
+        } else {
+            return response()->json(['message' => 'Role non autorisé'], 403);
+        }
+
+        return response()->json($pointages);
     }
+
+
 
     /**
      * Show the form for creating a new resource.

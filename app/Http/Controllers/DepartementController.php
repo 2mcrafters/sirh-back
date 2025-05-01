@@ -10,8 +10,26 @@ class DepartementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return Departement::all();
+    // public function index() {
+    //     return Departement::all();
+    // }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->role === 'EMPLOYE') {
+            $departement = $user->departement;  
+            return response()->json($departement);
+        } elseif ($user->role === 'CHEF_DEP') {
+            $departement = $user->departement;  
+            return response()->json($departement);
+        } elseif ($user->role === 'RH') {
+            $departements = Departement::all();
+            return response()->json($departements);
+        } else {
+            return response()->json(['message' => 'Role non autorisé'], 403);
+        }
     }
 
     /**

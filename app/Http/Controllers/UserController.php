@@ -14,13 +14,40 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        $users = User::all();
-        foreach ($users as $user) {
-            $user->profile_picture_url = $user->profile_picture_url;
+    // public function index() {
+    //     $users = User::all();
+    //     foreach ($users as $user) {
+    //         $user->profile_picture_url = $user->profile_picture_url;
+    //     }
+    //     return $users;
+    // }
+
+
+
+    public function index(Request $request)
+    {
+
+        $user = $request->user();
+
+        
+        if ($user->role === 'EMPLOYE') {
+            
+            $users = [$user]; 
+        } elseif ($user->role === 'CHEF_DEP') {
+            
+            $departementId = $user->departement_id;  
+            $users = User::where('departement_id', $departementId)->get();  
+        } elseif ($user->role === 'RH') {
+            
+            $users = User::all();
+        } else {
+            
+            return response()->json(['message' => 'Role non autorisé'], 403);
         }
-        return $users;
+
+        return response()->json($users);
     }
+
 
     /**
      * Show the form for creating a new resource.
