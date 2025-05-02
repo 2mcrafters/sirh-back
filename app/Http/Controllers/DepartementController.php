@@ -16,8 +16,10 @@ class DepartementController extends Controller
 
     public function index(Request $request)
     {
-        $user = $request->user();
         
+        $user = $request->user();
+        $departements = Departement::all();
+            return response()->json($departements);
 
         if ($user->role === 'EMPLOYE') {
             $departement = $user->departement;  

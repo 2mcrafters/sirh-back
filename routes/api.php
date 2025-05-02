@@ -81,7 +81,7 @@ Route::delete('/employes', [UserController::class, 'destroy']);
 
 
 
-Route::middleware('auth:sanctum')->get('/departements', [DepartementController::class, 'index']);
+Route::get('/departements', [DepartementController::class, 'index']);
 Route::post('/departements', [DepartementController::class, 'store']);
 Route::put('/departements', [DepartementController::class, 'update']);
 Route::delete('/departements', [DepartementController::class, 'destroy']);

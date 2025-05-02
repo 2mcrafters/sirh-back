@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 
 class UserController extends Controller
@@ -29,13 +28,17 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $user = $request->user();
+        // $user = $request->user();
+        // $departementId = $user->departement_id;  
+        $users = User::all();
+        return response()->json($users);
+
 
         
-        if ($user->role === 'EMPLOYE') {
+        if ($user->role === 'Employe') {
             
             $users = [$user]; 
-        } elseif ($user->role === 'CHEF_DEP') {
+        } elseif ($user->role === 'Chef_Dep') {
             
             $departementId = $user->departement_id;  
             $users = User::where('departement_id', $departementId)->get();  
