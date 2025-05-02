@@ -20,13 +20,13 @@ class AbsenceRequestsExport implements FromCollection,WithHeadings
                 $prenom = $item->user->prenom ?? '';
                 $nomComplet = trim("$prenom $nom");
                 return [
-                    'Nom Complet Employé' => $nomComplet ?: 'N/A',
+                    'Nom Complet Employé' => $nomComplet ,
                     'Type' => $item->type,
                     'Date Début' => $item->dateDebut,
                     'Date Fin' => $item->dateFin,
                     'Motif' => $item->motif,
                     'Statut' => $item->statut,
-                    'Justification' => $item->justificationUrl,
+                    'Justification' => $item->justification,
                 ];
             });
     }
