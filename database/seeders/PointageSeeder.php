@@ -14,7 +14,7 @@ class PointageSeeder extends Seeder
      */
     public function run(): void
     {
-        $employeIds = range(1, 5); 
+        $employeIds = array_merge([1], range(3, 8), range(1, 10));
         $jours = 10; 
 
         foreach ($employeIds as $employeId) {

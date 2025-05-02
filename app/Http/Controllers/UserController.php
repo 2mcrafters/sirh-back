@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
@@ -14,13 +15,44 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    // public function index() {
+    //     $users = User::all();
+    //     foreach ($users as $user) {
+    //         $user->profile_picture_url = $user->profile_picture_url;
+    //     }
+    //     return $users;
+    // }
+
+
+
+    public function index(Request $request)
+    {
+
+        // $user = $request->user();
+        // $departementId = $user->departement_id;  
         $users = User::all();
-        foreach ($users as $user) {
-            $user->profile_picture_url = $user->profile_picture_url;
+        return response()->json($users);
+
+
+        
+        if ($user->role === 'Employe') {
+            
+            $users = [$user]; 
+        } elseif ($user->role === 'Chef_Dep') {
+            
+            $departementId = $user->departement_id;  
+            $users = User::where('departement_id', $departementId)->get();  
+        } elseif ($user->role === 'RH') {
+            
+            $users = User::all();
+        } else {
+            
+            return response()->json(['message' => 'Role non autorisé'], 403);
         }
-        return $users;
+
+        return response()->json($users);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -33,6 +65,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request) {
         $rules = [
             'name' => 'required|string|max:100',
@@ -49,6 +82,7 @@ class UserController extends Controller
             'typeContrat' => 'required|in:Permanent,Temporaire',
             'date_naissance' => 'required|date',
             'statut' => 'required|in:Actif,Inactif,Congé,Malade',
+
             'departement_id' => 'required|exists:departements,id',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
@@ -103,6 +137,7 @@ class UserController extends Controller
     
         return $user;
     }
+    
 
     /**
      * Display the specified resource.
@@ -124,7 +159,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request) {
+   public function update(Request $request) {
         foreach ($request->all() as $updateData) {
             $user = User::findOrFail($updateData['id']);
             
